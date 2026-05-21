@@ -163,7 +163,7 @@ After launching, open your browser and navigate to the local URL displayed (typi
 
 ## 🧠 What I Learned & Key Reflections
 
-As an aspiring MSc student in medical informatics and machine learning, this project served as a deep immersion into the unique statistical, engineering, and ethical challenges of healthcare-oriented artificial intelligence. Below are my three primary reflections:
+As an aspiring graduate applicant preparing to apply for an MSc in Machine Learning, this project served as a deep immersion into the unique statistical, engineering, and clinical challenges of applying machine learning in healthcare. Below are my three primary reflections:
 
 ### 1. The Clinical Danger of Simpson's Paradox & Multicollinearity
 In pure predictive modeling, a collinear feature might be ignored if the overall classification metric remains high. However, in **clinical decision support systems**, the sign and magnitude of hazard ratios are just as critical as predictive accuracy because they directly inform medical recommendations. 
@@ -178,7 +178,7 @@ Creating a highly accurate model is only half the battle; building trust with cl
 
 ### 3. The Dual-Model Paradigm for Medical Trust
 Clinicians are rightfully skeptical of "black-box" systems. Through this project, I realized that a single model is rarely optimized for both deep risk modeling and time-to-event prognosis. 
-By designing a **dual-model architecture**—leveraging the robust non-linear boundaries of a Random Forest for SHAP explainability and the semi-parametric survival forecasting of a Cox PH model for time-to-event curves—I was able to deliver both a reliable probability of 5-year survival and a longitudinal survival trajectory. This modular approach provides a highly practical model for future medical informatics systems.
+By designing a **dual-model architecture**—leveraging the robust non-linear boundaries of a Random Forest for SHAP explainability and the semi-parametric survival forecasting of a Cox PH model for time-to-event curves—I was able to deliver both a reliable probability of 5-year survival and a longitudinal survival trajectory. This modular approach provides a highly practical design pattern for future clinical machine learning applications.
 
 ---
 
