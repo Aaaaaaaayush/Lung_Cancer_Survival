@@ -1,0 +1,11 @@
+gradio
+pandas
+numpy
+matplotlib
+seaborn
+lifelines
+shap
+joblib
+scikit-learn
+scipy
+threadpoolctl
