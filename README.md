@@ -28,16 +28,16 @@ Below is a demonstration of the interactive clinical decision support interface 
 
 ```mermaid
 graph TD
-    A["Raw Patient Data (1,500 Patients)"] --> B["Exploratory Data Analysis - EDA"]
-    B --> C["Data Preprocessing"]
-    C --> D["Ordinal Mapping & Cleansing"]
-    D --> E["SMOTE Target Balancing"]
-    E --> F["Dual-Model Pipeline"]
-    F --> G["Random Forest Classifier <br/>(5-Year Binary Survival)"]
-    F --> H["Cox Proportional Hazards <br/>(L2 Regularized Survival Curve)"]
-    G --> I["SHAP Interpretability explainer"]
-    H --> J["Time-to-Event Survival Curve"]
-    I --> K["Gradio Decision Support Interface"]
+    A[Raw Patient Data] --> B[Exploratory Data Analysis]
+    B --> C[Data Preprocessing]
+    C --> D[Ordinal Mapping & Cleansing]
+    D --> E[SMOTE Target Balancing]
+    E --> F[Dual-Model Pipeline]
+    F --> G[Random Forest Classifier]
+    F --> H[Cox Proportional Hazards]
+    G --> I[SHAP Interpretability]
+    H --> J[Time-to-Event Survival Curve]
+    I --> K[Gradio Decision Support Interface]
     J --> K
 ```
 
