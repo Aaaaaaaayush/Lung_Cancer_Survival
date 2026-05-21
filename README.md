@@ -21,8 +21,6 @@ Below is a demonstration of the interactive clinical decision support interface 
   <img src="outputs/demo.gif" alt="Clinical Prognosis Web Application Demo" width="900">
 </p>
 
-> [!TIP]
-> **Note on Live Preview:** To update this preview on your GitHub landing page, simply record a 10-second screen capture of your Gradio application (using tools like Screenpresso on Windows or Kap on macOS), export it as a GIF, and save it to `outputs/demo.gif` in this repository.
 
 ---
 
@@ -163,7 +161,7 @@ After launching, open your browser and navigate to the local URL displayed (typi
 
 ## 🧠 What I Learned & Key Reflections
 
-As an aspiring graduate applicant preparing to apply for an MSc in Machine Learning, this project served as a deep immersion into the unique statistical, engineering, and clinical challenges of applying machine learning in healthcare. Below are my three primary reflections:
+As an aspiring student in Machine Learning, this project served as a deep immersion into the unique statistical, engineering, and clinical challenges of applying machine learning in healthcare. Below are my three primary reflections:
 
 ### 1. The Clinical Danger of Simpson's Paradox & Multicollinearity
 In pure predictive modeling, a collinear feature might be ignored if the overall classification metric remains high. However, in **clinical decision support systems**, the sign and magnitude of hazard ratios are just as critical as predictive accuracy because they directly inform medical recommendations. 
