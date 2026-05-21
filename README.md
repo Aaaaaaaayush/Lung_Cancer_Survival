@@ -14,6 +14,16 @@ This system acts as a clinical **Decision Support System (DSS)**. It integrates 
 The application is fully compiled and deployed in production. You can interact with the prognostic model live on Hugging Face Spaces:
 👉 **[Live Gradio Demo on Hugging Face](https://huggingface.co/spaces/aayushai/lung-cancer-survival-predictor)**
 
+### 🖥️ Live Application Preview
+Below is a demonstration of the interactive clinical decision support interface in action, showcasing conditional UI inputs (hiding smoking parameters for non-smokers), dual-model predictions, and personalized explainability:
+
+<p align="center">
+  <img src="outputs/demo.gif" alt="Clinical Prognosis Web Application Demo" width="900">
+</p>
+
+> [!TIP]
+> **Note on Live Preview:** To update this preview on your GitHub landing page, simply record a 10-second screen capture of your Gradio application (using tools like Screenpresso on Windows or Kap on macOS), export it as a GIF, and save it to `outputs/demo.gif` in this repository.
+
 ---
 
 ## 📈 System Architecture & Methodology
@@ -37,6 +47,10 @@ graph TD
 * **Clinical Insights:** Analysis of target distribution confirmed a substantial class imbalance (63% mortality rate vs. 37% survival rate).
 * **Survival Discrepancy:** Kaplan-Meier stage-based validation proved a massive survival rate decline as cancer progressed from Stage I to Stage IV, mirroring real-world epidemiological profiles (WHO/GLOBOCAN).
 
+<p align="center">
+  <img src="outputs/eda_plots.png" alt="Exploratory Data Analysis" width="850">
+</p>
+
 ### 2. Preprocessing & Class Imbalance Correction
 * **Feature Encoding:** Ordinal mapping was applied to clinical tumor staging (Stage I ➔ 1, Stage II ➔ 2, Stage III ➔ 3, Stage IV ➔ 4) and gender.
 * **Target Balancing (SMOTE):** Synthetic Minority Over-sampling Technique (SMOTE) was implemented on the training split to balance the target classes perfectly (953 Survived / 953 Deceased), preventing model bias toward high mortality.
@@ -47,6 +61,10 @@ I trained and benchmarked multiple estimators on the balanced cohort:
 * **XGBoost Classifier:** Champion classification model, achieving **82.3% Accuracy**, **82% Precision**, **83% Recall**, and **82% F1-Score**.
 * **Random Forest Classifier:** Selected for model explainability deployment due to native tree compatibility with local SHAP waterfall estimators.
 
+<p align="center">
+  <img src="outputs/eval_plots.png" alt="Classification Benchmarks and Evaluation" width="850">
+</p>
+
 ### 4. Advanced Clinical Survival Analysis (Cox PH)
 * **Clinical Statistical Fit:** Implemented a semi-parametric Cox Proportional Hazards model using `lifelines` on the original clinical cohort (to preserve statistical baseline hazards).
 * **Simpson's Paradox & Multicollinearity Correction:** 
@@ -54,10 +72,21 @@ I trained and benchmarked multiple estimators on the balanced cohort:
   * **The Solution:** I applied **Ridge Survival Regularization (L2 Penalty)** using a stabilized `penalizer=0.05` constraint. 
   * **The Result:** The model stabilized, preserving a massive hazard ratio for `Cancer_Stage` (`3.93`) while restoring `Tumor_Size_cm` to its clinically correct Hazard Ratio of **`1.074`** (every 1 cm increase in tumor size raises mortality risk by 7.4%).
 
+<p align="center">
+  <img src="outputs/km_plot.png" alt="Kaplan-Meier Survival Curves by Stage" width="850">
+</p>
+
 ### 5. Medical Interpretability (SHAP)
 * To open the "black box" of machine learning, I integrated **SHAP (SHapley Additive exPlanations)** values:
   * **Global Interpretability:** Beeswarm plots rank features by overall contribution, highlighting `Cancer_Stage` and `Tumor_Size_cm` as major drivers.
   * **Local/Personalized Interpretability:** Waterfall charts calculate the exact contribution of each patient vital to their individual prognostic prediction.
+
+<p align="center">
+  <img src="outputs/shap_beeswarm.png" alt="SHAP Global Beeswarm Plot" width="850">
+</p>
+<p align="center">
+  <img src="outputs/shap_waterfall.png" alt="SHAP Local Waterfall Explanation" width="850">
+</p>
 
 ---
 
@@ -129,6 +158,27 @@ Launch the local Gradio web server:
 python app/app.py
 ```
 After launching, open your browser and navigate to the local URL displayed (typically `http://127.0.0.1:7860`).
+
+---
+
+## 🧠 What I Learned & Key Reflections
+
+As an aspiring MSc student in medical informatics and machine learning, this project served as a deep immersion into the unique statistical, engineering, and ethical challenges of healthcare-oriented artificial intelligence. Below are my three primary reflections:
+
+### 1. The Clinical Danger of Simpson's Paradox & Multicollinearity
+In pure predictive modeling, a collinear feature might be ignored if the overall classification metric remains high. However, in **clinical decision support systems**, the sign and magnitude of hazard ratios are just as critical as predictive accuracy because they directly inform medical recommendations. 
+During the survival analysis phase, I observed a classic statistical trap: standard Cox Proportional Hazards regression yielded a mathematically and clinically absurd hazard ratio of `0.97` for `Tumor_Size_cm`, suggesting that larger tumors were protective against mortality. 
+* **The Root Cause:** High multicollinearity with `Cancer_Stage`. Because larger tumors heavily correlate with advanced stages, and `Cancer_Stage` absorbed nearly all survival variance, the model over-adjusted the weight of `Tumor_Size_cm`, flipping its hazard coefficient.
+* **The Mitigation:** I applied **L2 Ridge Survival Penalization (`penalizer=0.05`)**. This restricted extreme weights, stabilized the model, and restored `Tumor_Size_cm` to its correct clinical Hazard Ratio of **`1.074`** (a 7.4% mortality risk increase per centimeter). This taught me that clinical ML demands active statistical stewardship rather than treating models as passive black boxes.
+
+### 2. Bridging the Gap: Product Engineering vs. Model Training
+Creating a highly accurate model is only half the battle; building trust with clinicians is what makes the technology viable in the real world. This project forced me to think like a product engineer:
+* **Conditional Visibility UX:** A patient who has "Never Smoked" should not be presented with sliding scales for "Cigarettes Per Day" or "Years Smoking." By engineering conditional logic directly into the Gradio UI, I reduced the cognitive load for clinical users and avoided introducing zero-padding noise into the model's feature vectors.
+* **Clinical Presence Filters:** SHAP explanations are mathematically pure but can be clinically confusing. A patient who does not have a medical history of smoking or chemotherapy does not need to see "Absence of Smoking" listed as a top survival contributor. Filtering the explanation graphs to only show features that are **clinically active** in the patient was a critical step in turning an abstract data visualization into an intuitive medical explanation.
+
+### 3. The Dual-Model Paradigm for Medical Trust
+Clinicians are rightfully skeptical of "black-box" systems. Through this project, I realized that a single model is rarely optimized for both deep risk modeling and time-to-event prognosis. 
+By designing a **dual-model architecture**—leveraging the robust non-linear boundaries of a Random Forest for SHAP explainability and the semi-parametric survival forecasting of a Cox PH model for time-to-event curves—I was able to deliver both a reliable probability of 5-year survival and a longitudinal survival trajectory. This modular approach provides a highly practical model for future medical informatics systems.
 
 ---
 
